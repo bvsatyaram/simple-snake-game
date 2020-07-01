@@ -15,6 +15,8 @@ class Snake {
   }
 
   addScoreCard() {
+    this.score = 0;
+    this.lastFruitEatenAt = new Date().getTime();
     this.scoreCard = document.createElement("div");
     this.scoreCard.classList.add("score-card");
     this.canvas.appendChild(this.scoreCard);
@@ -80,6 +82,7 @@ class Snake {
 
   handleFruitEat() {
     this.drawFruit();
+    this.lastFruitEatenAt = new Date().getTime();
     this.score = Math.floor(this.score * 1.25);
     if (this.frameInterval > 0) {
       this.frameInterval -= 20;
@@ -145,7 +148,9 @@ class Snake {
     // Add new head
     this.addedPixel = newHead;
     this.body.unshift(newHead);
-    this.score++;
+    if (new Date().getTime() <= this.lastFruitEatenAt + 10000) {
+      this.score++;
+    }
 
     // Remove the tail
     if (
