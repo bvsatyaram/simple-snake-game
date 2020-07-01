@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron&display=swap");
+
 :root {
   --grid-size: 50;
   --pixel-size: 10px;
@@ -17,6 +19,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  font-family: "Orbitron", sans-serif;
 }
 
 #snake {
@@ -39,4 +42,16 @@ body {
 
 #snake .pixel.fruit {
   background-color: #e74c3c;
+}
+
+#snake .score-card {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 30px;
+  line-height: 40px;
+}
+
+#snake .score-card::before {
+  content: "Score: ";
+  display: inline-block;
+  transform: scale(0.7);
 }

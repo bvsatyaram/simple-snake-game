@@ -11,6 +11,13 @@ class Snake {
     this.direction = this.directions.right;
     this.body = [];
     this.frameInterval = 100;
+    this.score = 0;
+  }
+
+  addScoreCard() {
+    this.scoreCard = document.createElement("div");
+    this.scoreCard.classList.add("score-card");
+    this.canvas.appendChild(this.scoreCard);
   }
 
   drawFruit() {
@@ -37,11 +44,16 @@ class Snake {
     }
   }
 
+  drawScore() {
+    this.scoreCard.innerHTML = this.score;
+  }
+
   drawSnake() {
     this.getPixel(this.addedPixel).classList.add("on");
     if (this.removedPixel) {
       this.getPixel(this.removedPixel).classList.remove("on");
     }
+    this.drawScore();
   }
 
   getRandomCoordinates() {
@@ -59,6 +71,7 @@ class Snake {
 
   handleFruitEat() {
     this.drawFruit();
+    this.score = Math.floor(this.score * 1.25);
   }
 
   handleUserInput(key) {
@@ -76,7 +89,6 @@ class Snake {
         this.direction = this.directions.left;
         break;
     }
-    console.log(key);
   }
 
   head() {
@@ -88,6 +100,7 @@ class Snake {
       this.canvas = document.getElementById("snake");
       if (this.canvas) {
         this.drawGrid();
+        this.addScoreCard();
         this.spawnSnake();
         this.drawFruit();
         this.runSnake();
@@ -120,6 +133,7 @@ class Snake {
     // Add new head
     this.addedPixel = newHead;
     this.body.unshift(newHead);
+    this.score++;
 
     // Remove the tail
     if (
