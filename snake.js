@@ -8,26 +8,48 @@ class Snake {
       down: 3,
       left: 4,
     };
-    this.direction = this.directions.right;
-    this.body = [];
-    this.frameInterval = 300;
-    this.score = 0;
+  }
+
+  addFinishScreen() {
+    this.finishScreen = document.createElement("div");
+    this.finishScreen.classList.add("finish-screen");
+
+    this.finishScreenMessage = document.createElement("div");
+    this.finishScreenMessage.classList.add("message");
+    this.finishScreenMessage.innerHTML = "You have scored a lot!";
+    this.finishScreen.appendChild(this.finishScreenMessage);
+
+    const button = document.createElement("a");
+    button.onclick = this.restart.bind(this);
+    button.innerHTML = "Restart";
+    this.finishScreen.appendChild(button);
+
+    this.canvas.appendChild(this.finishScreen);
   }
 
   addScoreCard() {
-    this.score = 0;
-    this.lastFruitEatenAt = new Date().getTime();
     this.scoreCard = document.createElement("div");
     this.scoreCard.classList.add("score-card");
     this.canvas.appendChild(this.scoreCard);
   }
 
+  didHitSelf(head) {
+    const hitPoint = this.body.find((pixel) => {
+      return pixel.x == head.x && pixel.y == head.y;
+    });
+
+    return !!hitPoint;
+  }
+
   drawFrame() {
+    if (!this.gameInProgress) return;
+
     if (this.frameInterval <= 0 || new Date().getTime() > this.nextFrameTime) {
       this.moveSnake();
 
       this.nextFrameTime = new Date().getTime() + this.frameInterval;
     }
+
     window.requestAnimationFrame(this.drawFrame.bind(this));
   }
 
@@ -65,6 +87,13 @@ class Snake {
       this.getPixel(this.removedPixel).classList.remove("on");
     }
     this.drawScore();
+  }
+
+  endGame() {
+    this.gameInProgress = false;
+    const message = `You scored ${this.score}`;
+    this.finishScreenMessage.innerHTML = message;
+    this.finishScreen.style.display = "block";
   }
 
   getRandomCoordinates() {
@@ -114,14 +143,22 @@ class Snake {
     document.addEventListener("DOMContentLoaded", () => {
       this.canvas = document.getElementById("snake");
       if (this.canvas) {
+        this.initData();
         this.drawGrid();
-        this.addScoreCard();
-        this.spawnSnake();
-        this.drawFruit();
-        this.runSnake();
         this.watchInput();
+        this.addScoreCard();
+        this.addFinishScreen();
+        this.startGame();
       }
     });
+  }
+
+  initData() {
+    this.direction = this.directions.right;
+    this.body = [];
+    this.frameInterval = 300;
+    this.score = 0;
+    this.gameInProgress = false;
   }
 
   moveSnake() {
@@ -145,6 +182,10 @@ class Snake {
         break;
     }
 
+    if (this.didHitSelf(newHead)) {
+      return this.endGame();
+    }
+
     // Add new head
     this.addedPixel = newHead;
     this.body.unshift(newHead);
@@ -165,8 +206,28 @@ class Snake {
     this.drawSnake();
   }
 
-  runSnake() {
+  restart() {
+    document.querySelectorAll(".pixel.on").forEach((ele) => {
+      ele.classList.remove("on");
+    });
+
+    document.querySelectorAll(".pixel.fruit").forEach((ele) => {
+      ele.classList.remove("fruit");
+    });
+
+    this.initData();
+    this.startGame();
+  }
+
+  startGame() {
+    this.gameInProgress = true;
     this.nextFrameTime = new Date().getTime();
+    this.lastFruitEatenAt = new Date().getTime();
+    this.finishScreen.style.display = "none";
+
+    this.spawnSnake();
+    this.drawFruit();
+
     window.requestAnimationFrame(this.drawFrame.bind(this));
   }
 
