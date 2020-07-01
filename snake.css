@@ -1,0 +1,42 @@
+:root {
+  --grid-size: 50;
+  --pixel-size: 10px;
+  --pixel-gutter: 4px;
+  --pixel-radius: 3px;
+}
+
+html,
+body {
+  margin: 0;
+  border: 0;
+}
+
+body {
+  background-color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#snake {
+  width: calc(var(--grid-size) * (var(--pixel-size) + var(--pixel-gutter)));
+  line-height: 0;
+}
+
+#snake .pixel {
+  display: inline-block;
+  width: var(--pixel-size);
+  height: var(--pixel-size);
+  background-color: #34495e;
+  margin: calc(var(--pixel-gutter) / 2);
+  border-radius: var(--pixel-radius);
+}
+
+#snake .pixel.on {
+  background-color: #bdc3c7;
+}
+
+#snake .pixel.fruit {
+  background-color: #e74c3c;
+}
