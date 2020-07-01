@@ -10,7 +10,7 @@ class Snake {
     };
     this.direction = this.directions.right;
     this.body = [];
-    this.frameInterval = 100;
+    this.frameInterval = 300;
     this.score = 0;
   }
 
@@ -18,6 +18,15 @@ class Snake {
     this.scoreCard = document.createElement("div");
     this.scoreCard.classList.add("score-card");
     this.canvas.appendChild(this.scoreCard);
+  }
+
+  drawFrame() {
+    if (this.frameInterval <= 0 || new Date().getTime() > this.nextFrameTime) {
+      this.moveSnake();
+
+      this.nextFrameTime = new Date().getTime() + this.frameInterval;
+    }
+    window.requestAnimationFrame(this.drawFrame.bind(this));
   }
 
   drawFruit() {
@@ -72,6 +81,9 @@ class Snake {
   handleFruitEat() {
     this.drawFruit();
     this.score = Math.floor(this.score * 1.25);
+    if (this.frameInterval > 0) {
+      this.frameInterval -= 20;
+    }
   }
 
   handleUserInput(key) {
@@ -149,7 +161,8 @@ class Snake {
   }
 
   runSnake() {
-    setInterval(this.moveSnake.bind(this), this.frameInterval);
+    this.nextFrameTime = new Date().getTime();
+    window.requestAnimationFrame(this.drawFrame.bind(this));
   }
 
   spawnSnake() {
