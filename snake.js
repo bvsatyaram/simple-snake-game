@@ -8,6 +8,7 @@ class Snake {
       down: 3,
       left: 4,
     };
+    this.localStorage = window.localStorage;
   }
 
   addFinishScreen() {
@@ -30,6 +31,15 @@ class Snake {
   addScoreCard() {
     this.scoreCard = document.createElement("div");
     this.scoreCard.classList.add("score-card");
+
+    this.currentScore = document.createElement("div");
+    this.currentScore.classList.add("current-score");
+    this.scoreCard.appendChild(this.currentScore);
+
+    this.highScore = document.createElement("div");
+    this.highScore.classList.add("high-score");
+    this.scoreCard.appendChild(this.highScore);
+
     this.canvas.appendChild(this.scoreCard);
   }
 
@@ -77,8 +87,13 @@ class Snake {
     }
   }
 
+  drawHighScore() {
+    const highScore = localStorage.getItem("highScore") || "N/A";
+    this.highScore.innerHTML = highScore;
+  }
+
   drawScore() {
-    this.scoreCard.innerHTML = this.score;
+    this.currentScore.innerHTML = this.score;
   }
 
   drawSnake() {
@@ -91,7 +106,18 @@ class Snake {
 
   endGame() {
     this.gameInProgress = false;
-    const message = `You scored ${this.score}`;
+
+    let message;
+    let highScore = localStorage.getItem("highScore") || 0;
+    highScore = parseInt(highScore, 10);
+
+    if (this.score > highScore) {
+      this.localStorage.setItem("highScore", this.score);
+      message = "You have a new high score!!";
+    } else {
+      message = "Game Over.";
+    }
+
     this.finishScreenMessage.innerHTML = message;
     this.finishScreen.style.display = "block";
   }
@@ -227,6 +253,7 @@ class Snake {
 
     this.spawnSnake();
     this.drawFruit();
+    this.drawHighScore();
 
     window.requestAnimationFrame(this.drawFrame.bind(this));
   }

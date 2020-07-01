@@ -49,12 +49,19 @@ body {
   color: rgba(255, 255, 255, 0.2);
   font-size: 30px;
   line-height: 40px;
+  display: flex;
+  justify-content: space-between;
 }
 
-#snake .score-card::before {
+#snake .score-card .current-score::before,
+#snake .score-card .high-score::before {
   content: "Score: ";
   display: inline-block;
   transform: scale(0.7);
+}
+
+#snake .score-card .high-score::before {
+  content: "High: ";
 }
 
 #snake .finish-screen {
